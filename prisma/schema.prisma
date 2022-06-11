@@ -15,12 +15,14 @@ model Pizza {
   createdAt    DateTime     @default(now())
   updatedAt    DateTime     @updatedAt
   name         String       @unique
-  price        Float
-  discount     Discount[]
+  basePrice    Float
+  discount     Discount?    @relation(fields: [discountId], references: [id])
+  discountId   Int?
   ingredients  Ingredient[]
   dough        PizzaDough   @relation(fields: [pizzaDoughId], references: [id])
   pizzaDoughId Int
-  finalPrice   Float
+  sizes        PizzaSizes[]
+  orders       Order[]
 }
 
 model PizzaDough {
@@ -28,6 +30,13 @@ model PizzaDough {
   createdAt DateTime @default(now())
   name      String   @unique
   Pizza     Pizza[]
+}
+
+model PizzaSizes {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  size      Int      @unique
+  pizzas    Pizza[]
 }
 
 model Ingredient {
@@ -42,6 +51,16 @@ model Client {
   createdAt DateTime @default(now())
   name      String
   surname   String
+  Order     Order[]
+}
+
+model Order {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  name      String
+  client    Client   @relation(fields: [clientId], references: [id])
+  clientId  Int
+  pizzas    Pizza[]
 }
 
 model Discount {
@@ -50,13 +69,3 @@ model Discount {
   value              Float   @unique
   pizzasWithDiscount Pizza[]
 }
-
-// model IngredientsOnPizzas {
-//   ingredient     Ingredient @relation(fields: [ingredientId], references: [id_ingredient])
-//   ingredientId   Int
-//   pizza          Pizza      @relation(fields: [pizzaId], references: [id_pizza])
-//   pizzaId        Int
-//   ingredientName String
-
-//   @@id([ingredientId, pizzaId])
-// }

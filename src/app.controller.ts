@@ -49,6 +49,16 @@ export class AppController {
       },
     });
 
+    const result = await this.prisma.$queryRaw<
+      Ingredient[]
+    >`SELECT Ingredient.name
+    FROM Pizza LEFT JOIN _IngredientToPizza ON Pizza.id = _IngredientToPizza.B
+    LEFT JOIN Ingredient ON _IngredientToPizza.A = Ingredient.id WHERE Pizza.id = 99`;
+    console.log(result);
+    result.forEach((value) => {
+      console.log(value.name);
+    });
+
     const test = await this.prisma.pizza.create({
       data: {
         name: Date.now().toString(),
