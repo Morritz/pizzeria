@@ -53,10 +53,20 @@ export class AppController {
       data: {
         name: Date.now().toString(),
         price: 100.0,
-        discount: 0.0,
         ingredients: {
           connect: [{ id: test2.id }, { id: test3.id }],
         },
+        dough: {
+          connectOrCreate: {
+            create: {
+              name: 'Cienkie',
+            },
+            where: {
+              name: 'Cienkie',
+            },
+          },
+        },
+        finalPrice: 1000.0,
       },
     });
     console.log(test);
