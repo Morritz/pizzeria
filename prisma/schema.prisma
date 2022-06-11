@@ -7,5 +7,56 @@ generator client {
 
 datasource db {
   provider = "mysql"
-  url      = env("DATABASE_URL")
+  url      = "mysql://root:test@localhost:3306/pizzeria"
 }
+
+model Pizza {
+  id           Int          @id @default(autoincrement())
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  name         String       @unique
+  price        Float
+  discount     Discount[]
+  ingredients  Ingredient[]
+  dough        PizzaDough   @relation(fields: [pizzaDoughId], references: [id])
+  pizzaDoughId Int
+  finalPrice   Float
+}
+
+model PizzaDough {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  name      String   @unique
+  Pizza     Pizza[]
+}
+
+model Ingredient {
+  id                    Int      @id @default(autoincrement())
+  createdAt             DateTime @default(now())
+  name                  String   @unique
+  pizzasWithIngredients Pizza[]
+}
+
+model Client {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  name      String
+  surname   String
+}
+
+model Discount {
+  id                 Int     @id @default(autoincrement())
+  name               String  @unique
+  value              Float   @unique
+  pizzasWithDiscount Pizza[]
+}
+
+// model IngredientsOnPizzas {
+//   ingredient     Ingredient @relation(fields: [ingredientId], references: [id_ingredient])
+//   ingredientId   Int
+//   pizza          Pizza      @relation(fields: [pizzaId], references: [id_pizza])
+//   pizzaId        Int
+//   ingredientName String
+
+//   @@id([ingredientId, pizzaId])
+// }
