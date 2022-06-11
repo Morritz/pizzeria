@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Render } from '@nestjs/common';
 import { Pizza, Ingredient } from '@prisma/client';
 import { AppService } from './app.service';
 import { PrismaService } from './prisma.service';
@@ -11,6 +11,12 @@ export class AppController {
   ) {}
 
   @Get()
+  @Render('Home')
+  getHome() {
+    return { message: 'NestJS ❤ Svelte' };
+  }
+
+  @Get('/test')
   async getHello(): Promise<any> {
     // const onePizza = await this.prisma.pizza.findFirst();
     // const ingredients = await this.prisma.ingredientsOnPizzas.findMany({
@@ -62,7 +68,7 @@ export class AppController {
     const test = await this.prisma.pizza.create({
       data: {
         name: Date.now().toString(),
-        price: 100.0,
+        basePrice: 100.0,
         ingredients: {
           connect: [{ id: test2.id }, { id: test3.id }],
         },
@@ -76,7 +82,6 @@ export class AppController {
             },
           },
         },
-        finalPrice: 1000.0,
       },
     });
     console.log(test);
